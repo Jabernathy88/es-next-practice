@@ -1,68 +1,209 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Based on tutorial at [Fireship here](https://www.youtube.com/watch?v=Mus_vwhTCq0).
 
-## Available Scripts
+Tested these in browser console:
 
-In the project directory, you can run:
+```
+    // debug example
+    const foo = { name: 'tom', age: 30, nervous: false }
+    const bar = { name: 'dick', age: 40, nervous: false }
+    const baz = { name: 'harry', age: 50, nervous: true }
 
-### `npm start`
+    // old
+    console.log(foo)
+    console.log(bar)
+    console.log(baz)
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+    // new: computed property names (these work in react components)
+    console.log('%c Three guys', 'color: teal; font-weight: bold;')
+    console.log({ foo, bar, baz })
+    console.table([foo, bar, baz])
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+    console.time('looper')
 
-### `npm test`
+    let i = 0;
+    while (i < 1000000) { i++ }
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+    console.timeEnd('looper')
 
-### `npm run build`
+    const deleteMe = () => console.trace('bye bye database')
+    deleteMe()
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+    const turtle = {
+      name: 'Bob 🐢',
+      legs: 4,
+      shell: true,
+      type: 'amphibious',
+      meal: 10,
+      diet: 'berries'
+    }
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+    // old
+    function feed(animal) {
+      return `Feed ${animal.name} ${animal.meal} pounds of ${animal.diet}`;
+    }
+    // new
+    function altFeed({ name, meal, diet }) {
+      return `Feed ${name} ${meal} kilos of ${diet}`;
+    }
+    // or
+    function alternateFeed(animal) {
+      const { name, meal, diet } = animal
+      return `Feed ${name} ${meal} KILOS of ${diet}`;
+    }
+    console.log(feed(turtle))
+    console.log(altFeed(turtle))
+    console.log(alternateFeed(turtle))
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    // template literal
+    const horse = {
+      name: 'Topher 🐎',
+      size: 'large',
+      skills: ['jousting', 'racing'],
+      age: 7
+    }
 
-### `npm run eject`
+    // old
+    // not worth re-writing
+    // new
+    const {name, size, skills} = horse;
+    const bio = `${name} is a ${size} horse skilled in ${skills.join(' & ')}`
+    console.log(bio)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+    function horseAge(str, age) {
+      const ageStr = age > 5 ? 'old' : 'young';
+      return `${str[0]}${ageStr} at ${age} years`;
+    }
+    const bio2 = horseAge`This horse is ${horse.age}`;
+    console.log(bio2)
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    // spread syntax
+    const pikachu = { name: 'Pikachu' }
+    const stats = { hp: 40, attack: 60, defense: 45 }
+    console.log(pikachu)
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+    // old 
+    pikachu['hp'] = stats.hp
+    pikachu['attack'] = stats.attack
+    pikachu['defense'] = stats.defense
+    console.log(pikachu)
+    // newish
+    const lv10 = Object.assign(pikachu, stats)
+    // or
+    const lv11 = Object.assign(pikachu, { hp: 70 })
+    console.log({ pikachu })
+    // new
+    const lv12 = { ...pikachu, ...stats }
+    console.log({ pikachu })
+    console.log({ lv12 })
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+    // spread arrays
+    let pokemon = ['Arbok', 'Raichu'];
+    console.log(pokemon)
+    // old
+    pokemon.push('Bulbasaur')
+    pokemon.push('Metapod')
+    console.log(pokemon)
+    // new push
+    pokemon = [...pokemon, 'Negasaur']
+    console.log(pokemon)
+    // new unshift
+    pokemon = ['Alphamon', ...pokemon, 'Zetamon', ]
+    console.log({ pokemon })
 
-## Learn More
+    // loops
+    const orders = [500, 30, 99, 15, 223];
+    // old
+    let total = 0;
+    const withTax = [];
+    const highValue = [];
+    const loopFunction = () => {
+      let i =0
+      for (i = 0; i < orders.length; i++) {
+        // reduce
+        total += orders[i];
+        // map
+        withTax.push(orders[i] * 1.1);
+        // filter 
+        if (orders[i] > 100) {
+          highValue.push(orders[i])
+        }
+      }
+    }
+    loopFunction()
+    console.log({orders}, {total}, {withTax}, {highValue})
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+    // new reduce
+    const orders2 = [500, 30, 99, 15, 223];
+    const total2 = orders2.reduce((acc, cur) => acc + cur)
+    console.log({ total2 });
+    // note: reduce did not mutate the original value
+    console.log({ orders2 })
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+    // new map
+    const withTax2 = orders2.map(v => v * 1.1);
+    console.log({withTax2})
 
-### Code Splitting
+    // new filter
+    const highValue2 = orders2.filter(v => v > 100);
+    console.log({highValue2})
+    console.log({ orders2 })
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+    // promises
+    const random = () => {
+      return Promise.resolve(Math.random())
+    }
 
-### Analyzing the Bundle Size
+    const sumRondomNums = () => {
+      let first;
+      let second;
+      let third;
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+      return random()
+        .then(v => {
+          first = v;
+          return random();
+        })
+      .then(v => {
+        second = v;
+        return random();
+      })
+      .then(v => {
+        third = v;
+        return first + second + third;
+      })
+      .then(v => {
+        console.log(`Result is: ${v}`)
+      })
+    }
+    sumRondomNums()
 
-### Making a Progressive Web App
+    // // async await
+    const sumRandomAsyncNums = async() => {
+      const first = await random();
+      const second = await random();
+      const third = await random();
+      console.log(`Async result is: ${first + second + third}`)
+    }
+    sumRandomAsyncNums()
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+    return (
+      <div className="App">
+        <header className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          <p>
+            Edit <code>src/App.js</code> and save to reload.
+          </p>
+          <a
+            className="App-link"
+            href="https://reactjs.org"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Learn React
+          </a>
+        </header>
+      </div>
+    );
+  }
+}
+```
